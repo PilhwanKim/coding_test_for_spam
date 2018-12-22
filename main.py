@@ -4,19 +4,37 @@ from bs4 import BeautifulSoup
 
 
 def get_url_in_html(html_content):
+    """
+    html 컨텐츠내 a 엘리먼트의 href url 주소를 추출함
+    :param html_content:
+    :return:
+    """
     soup = BeautifulSoup(html_content, 'html.parser')
     links = soup.findAll('a')
-    urls = [link.get('href') for link in links]
+    urls = {link.get('href') for link in links}
     return urls
 
 
 def get_redirection_url(resp):
+    """
+    리다이렉션 url 리스트를 반환
+    :param resp: 
+    :return: 
+    """
     urls = [hist.url for hist in reversed(resp.history[1:]) if hist.status_code in [301, 302]]
     urls.append(resp.url)
     return urls
 
 
 def is_spem_link_domain(re_url, spemLinkDomains):
+    """
+    스펨 링크 안에 포함된 url 인지 확인
+    :param re_url:
+    :param spemLinkDomains:
+    :return:
+    True 스팸 링크에 포함
+    False 스팸 링크에 미포함
+    """
     for spam_link in spemLinkDomains:
         if spam_link in re_url:
             return True
@@ -85,6 +103,13 @@ def is_spem_in_html_content(resp, spemLinkDomains):
 
 
 def is_spam(content, spem_link_domains, redirection_depth):
+    """
+    스팸여부를 알리는 main 함수
+    :param content: 카드 컨텐츠
+    :param spem_link_domains: 스팸 링크 도메인
+    :param redirection_depth: 스팸 여부 찾는 단계
+    :return: 
+    """
     # 컨텐츠 안의 url 들을 전부 검색한다.
     urls_in_content = extract_url_in_content(content)
 

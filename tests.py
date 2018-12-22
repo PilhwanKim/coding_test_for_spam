@@ -222,4 +222,4 @@ class MainTests(TestCase):
                 </body>
                 </html>
             """),
-        ["http://www.fileok.com", "http://www.fileok2.com"])
+            {"http://www.fileok.com", "http://www.fileok2.com"})
